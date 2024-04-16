@@ -3,7 +3,7 @@ class PasswordResetController < ApplicationController
     end
 
     def create
-        @user = User.find_by(reset_password_params)
+        @user = User.find_by(email: params[:email])
 
         if @user.present?
             # send email
@@ -13,8 +13,21 @@ class PasswordResetController < ApplicationController
         redirect_to root_path, notice: "If an account with that mail was found, we have sent a link to reset your password"
     end
 
+    def edit
+        @user = User.find_signed!(params[:token], purpose: "password_reset")
+    rescue ActiveSupport::MessageVerifier::InvalidSignature
+        redirect_to sign_in_path, alert:"Your token has expired please retry"
+    end
+
+    def update
+        @user = User.find_signed!(params[:token], purpose: "password_reset")
+        if @user.update(password_params)
+            redirect_to sign_in_path, notice: "Your password was reset successfully. Please sign in"
+        end
+    end
+
     private
-    def reset_password_params
-        params.require(:email).permit(:email)
+    def password_params
+        params.require(:user).permit(:password, :password_confirmation)
     end
 end
