@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   get "passwords", to:"passwords#edit", as: :edit_password
   patch "passwords", to:"passwords#update"
 
+  get "password/reset", to:"password_reset#new", as: :password_reset
+  post "password/reset", to:"password_reset#create"
+
   delete "logout", to:"sessions#destroy"
 
   get "about", to:"about#index", as: :about # 
