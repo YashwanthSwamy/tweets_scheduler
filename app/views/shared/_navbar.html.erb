@@ -22,7 +22,7 @@
           <% if Current.user %>
             <li class="nav-item">
               <span class="nav-text">
-                <%= Current.user.email%>
+                <%= link_to Current.user.email, edit_password_path, class:"nav-link" %>
               </span>
             </li>
             <li class="nav-item">
